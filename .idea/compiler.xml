@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="configServer" />
         <module name="discovery" />
+        <module name="product" />
       </profile>
       <profile name="Annotation profile for customer" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -26,6 +27,7 @@
       <module name="configServer" options="-parameters" />
       <module name="customer" options="-parameters" />
       <module name="discovery" options="-parameters" />
+      <module name="product" options="-parameters" />
     </option>
   </component>
 </project>
