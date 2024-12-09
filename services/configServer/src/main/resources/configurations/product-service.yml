@@ -3,12 +3,12 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/product
+    url: jdbc:postgresql://localhost:5433/product
     username: aligorithm
     password: aligorithm
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create-drop
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   flyway:
