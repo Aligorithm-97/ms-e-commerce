@@ -1,18 +1,21 @@
 package com.aligorithm.ecommerce.order;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository repository;
     private final OrderMapper mapper;
+
+    public OrderService(OrderRepository repository, OrderMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
     public List<OrderResponse> findAllOrders() {
         return this.repository.findAll()
