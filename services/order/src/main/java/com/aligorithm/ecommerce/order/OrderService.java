@@ -2,10 +2,13 @@ package com.aligorithm.ecommerce.order;
 
 import com.aligorithm.ecommerce.customer.CustomerClient;
 import com.aligorithm.ecommerce.exception.BusinessException;
+import com.aligorithm.ecommerce.kafka.OrderConfirmation;
+import com.aligorithm.ecommerce.kafka.OrderProducer;
 import com.aligorithm.ecommerce.orderline.OrderLineRequest;
 import com.aligorithm.ecommerce.orderline.OrderLineService;
 import com.aligorithm.ecommerce.product.ProductClient;
 import com.aligorithm.ecommerce.product.PurchaseRequest;
+import com.aligorithm.ecommerce.product.PurchaseResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -20,21 +23,23 @@ public class OrderService {
     private final OrderRepository repository;
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
+    private final OrderProducer orderProducer;
 
 
-    public OrderService(CustomerClient customerClient, ProductClient productClient, OrderRepository repository, OrderMapper mapper, OrderLineService orderLineService) {
+    public OrderService(CustomerClient customerClient, ProductClient productClient, OrderRepository repository, OrderMapper mapper, OrderLineService orderLineService, OrderProducer orderProducer) {
         this.customerClient = customerClient;
         this.productClient = productClient;
         this.repository = repository;
         this.mapper = mapper;
         this.orderLineService = orderLineService;
+        this.orderProducer = orderProducer;
     }
 
     public Integer createOrder(OrderRequest request) {
         var customer = this.customerClient.findCustomerById(request.customerId())
                 .orElseThrow(() -> new BusinessException("Customer does not exists !"));
 
-        this.productClient.purchaseProducts(request.products());
+        var purchasedProducts = this.productClient.purchaseProducts(request.products());
 
         var order = this.repository.save(mapper.toOrder(request));
 
@@ -48,8 +53,19 @@ public class OrderService {
                     )
             );
         }
+        // todo start payment process
 
-        return null;
+        orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                        request.reference(),
+                        request.amount(),
+                        request.paymentMethod(),
+                        customer,
+                        purchasedProducts
+                )
+        );
+
+        return order.getId();
     }
 
     public List<OrderResponse> findAllOrders() {
