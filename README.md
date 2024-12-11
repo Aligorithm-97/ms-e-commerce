@@ -6,7 +6,7 @@ The **E-Commerce MicroService Application** is a distributed system designed for
 This application leverages cutting-edge technologies to handle complex workflows, ensuring high availability and fault tolerance.
 
 ## Architecture
-![Architecture Diagram](./architecture/architecture.png) <!-- Update the path based on your project structure -->
+![Architecture Diagram](./architecture/architecture.PNG)
 
 The architecture employs microservices that communicate asynchronously using Kafka and synchronously using OpenFeign and RestTemplate. Each service is designed to handle a specific domain, adhering to the principles of **Domain-Driven Design**.
 
