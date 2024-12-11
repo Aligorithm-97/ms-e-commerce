@@ -1,10 +1,9 @@
 package com.aligorithm.ecommerce.order;
 
+import com.aligorithm.ecommerce.customer.CustomerClient;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,12 +17,12 @@ public class OrderController {
         this.service = service;
     }
 
-//    @PostMapping
-//    public ResponseEntity<Integer> createOrder(
-//            @RequestBody @Valid OrderRequest request
-//    ) {
-//        return ResponseEntity.ok(this.service.createOrder(request));
-//    }
+    @PostMapping
+    public ResponseEntity<Integer> createOrder(
+            @RequestBody @Valid OrderRequest request
+    ) {
+        return ResponseEntity.ok(this.service.createOrder(request));
+    }
 
     @GetMapping
     public ResponseEntity<List<OrderResponse>> findAll() {
