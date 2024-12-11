@@ -6,6 +6,8 @@ import com.aligorithm.ecommerce.kafka.OrderConfirmation;
 import com.aligorithm.ecommerce.kafka.OrderProducer;
 import com.aligorithm.ecommerce.orderline.OrderLineRequest;
 import com.aligorithm.ecommerce.orderline.OrderLineService;
+import com.aligorithm.ecommerce.payment.PaymentClient;
+import com.aligorithm.ecommerce.payment.PaymentRequest;
 import com.aligorithm.ecommerce.product.ProductClient;
 import com.aligorithm.ecommerce.product.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,15 +25,17 @@ public class OrderService {
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
 
 
-    public OrderService(CustomerClient customerClient, ProductClient productClient, OrderRepository repository, OrderMapper mapper, OrderLineService orderLineService, OrderProducer orderProducer) {
+    public OrderService(CustomerClient customerClient, ProductClient productClient, OrderRepository repository, OrderMapper mapper, OrderLineService orderLineService, OrderProducer orderProducer, PaymentClient paymentClient) {
         this.customerClient = customerClient;
         this.productClient = productClient;
         this.repository = repository;
         this.mapper = mapper;
         this.orderLineService = orderLineService;
         this.orderProducer = orderProducer;
+        this.paymentClient = paymentClient;
     }
 
     public Integer createOrder(OrderRequest request) {
@@ -52,7 +56,14 @@ public class OrderService {
                     )
             );
         }
-        // todo start payment process
+        var paymentRequest = new PaymentRequest(
+                request.amount(),
+                request.paymentMethod(),
+                order.getId(),
+                order.getReference(),
+                customer
+        );
+        paymentClient.requestOrderPayment(paymentRequest);
 
         orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
