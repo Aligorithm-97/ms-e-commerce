@@ -8,7 +8,6 @@ import com.aligorithm.ecommerce.orderline.OrderLineRequest;
 import com.aligorithm.ecommerce.orderline.OrderLineService;
 import com.aligorithm.ecommerce.product.ProductClient;
 import com.aligorithm.ecommerce.product.PurchaseRequest;
-import com.aligorithm.ecommerce.product.PurchaseResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
