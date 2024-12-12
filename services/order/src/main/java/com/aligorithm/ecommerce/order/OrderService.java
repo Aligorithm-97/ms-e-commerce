@@ -12,6 +12,7 @@ import com.aligorithm.ecommerce.product.ProductClient;
 import com.aligorithm.ecommerce.product.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ public class OrderService {
         this.paymentClient = paymentClient;
     }
 
+    @Transactional
     public Integer createOrder(OrderRequest request) {
         var customer = this.customerClient.findCustomerById(request.customerId())
                 .orElseThrow(() -> new BusinessException("Customer does not exists !"));
